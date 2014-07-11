@@ -1,0 +1,21 @@
+http {
+    upstream elumen {
+        server <%= node[:nginx][:balancer] %>;
+    }
+
+    server {
+        listen 80;
+        server_name elumenapp.com;
+        access_log  /var/log/nginx/log/elumenapp.com.access.log  main;
+        error_log  /var/log/nginx/log/elumenapp.com.error.log;
+        location / {
+            proxy_pass http://elumen;
+            proxy_set_header        Host            $host;
+            proxy_set_header        X-Real-IP       $remote_addr;
+            proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+    }
+}
+
+
+
